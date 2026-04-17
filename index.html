@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gloire à la Compagnie I</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #c9a84c;
+    --gold-light: #e8c96a;
+    --gold-dim: #7a6030;
+    --bg: #0a0a0e;
+    --bg2: #12121a;
+    --bg3: #1c1c28;
+    --border: rgba(201,168,76,0.2);
+    --border-bright: rgba(201,168,76,0.5);
+    --text: #e8e0d0;
+    --text-dim: #8a8070;
+    --red: #c94c4c;
+    --teal: #4ca8a8;
+    --purple: #9b7fea;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-weight: 300;
+    min-height: 100vh;
+    font-size: 17px;
+  }
+
+  /* HEADER */
+  header {
+    text-align: center;
+    padding: 48px 24px 32px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+  .event-title {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(22px, 4vw, 40px);
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .event-subtitle {
+    font-size: 15px;
+    color: var(--text-dim);
+    margin-top: 6px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-weight: 300;
+  }
+
+  /* NAV */
+  nav {
+    display: flex;
+    justify-content: center;
+    gap: 2px;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+  }
+  .tab {
+    font-family: 'Cinzel', serif;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 8px 20px;
+    background: none;
+    border: 1px solid transparent;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .tab:hover { color: var(--text); border-color: var(--border); }
+  .tab.active { color: var(--gold); border-color: var(--border-bright); background: rgba(201,168,76,0.05); }
+
+  /* MAIN */
+  main { max-width: 960px; margin: 0 auto; padding: 32px 24px 64px; }
+
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* LEADERBOARD */
+  .lb-header {
+    display: grid;
+    grid-template-columns: 40px 1fr 80px 80px 80px 80px;
+    gap: 12px;
+    padding: 0 16px 10px;
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 8px;
+  }
+  .lb-row {
+    display: grid;
+    grid-template-columns: 40px 1fr 80px 80px 80px 80px;
+    gap: 12px;
+    align-items: center;
+    padding: 14px 16px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    margin-bottom: 4px;
+    transition: all 0.2s;
+    cursor: default;
+  }
+  .lb-row:hover { border-color: var(--border); background: var(--bg2); }
+  .lb-row.rank-1 { border-color: rgba(201,168,76,0.4); background: rgba(201,168,76,0.04); }
+  .lb-row.rank-2 { border-color: rgba(180,180,180,0.3); background: rgba(180,180,180,0.02); }
+  .lb-row.rank-3 { border-color: rgba(180,120,60,0.3); background: rgba(180,120,60,0.02); }
+  .rank-num {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    color: var(--text-dim);
+    text-align: center;
+  }
+  .rank-1 .rank-num { color: var(--gold); }
+  .rank-2 .rank-num { color: #b4b4b4; }
+  .rank-3 .rank-num { color: #b4783c; }
+  .player-name {
+    font-size: 17px;
+    font-weight: 400;
+  }
+  .score-total {
+    font-family: 'Cinzel', serif;
+    font-size: 18px;
+    color: var(--gold);
+    text-align: right;
+  }
+  .score-base, .score-bonus, .hf-count {
+    font-size: 13px;
+    color: var(--text-dim);
+    text-align: right;
+  }
+  .score-bonus { color: var(--teal); }
+
+  /* PROGRESS BAR per dungeon (detail) */
+  .lb-detail { display: none; padding: 12px 16px 16px 56px; }
+  .lb-row.open .lb-detail { display: block; }
+  .dungeon-progress { margin-bottom: 10px; }
+  .dp-header { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px; }
+  .dp-name { color: var(--text-dim); }
+  .dp-count { color: var(--gold-dim); }
+  .dp-bar-bg { height: 3px; background: var(--bg3); border-radius: 2px; }
+  .dp-bar-fill { height: 3px; background: var(--gold); border-radius: 2px; transition: width 0.4s; }
+  .dp-bar-fill.complete { background: var(--teal); }
+
+  /* ACHIEVEMENTS PAGE */
+  .dungeon-block { margin-bottom: 28px; }
+  .dungeon-title {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold-dim);
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .dungeon-title .bonus-tag {
+    font-size: 10px;
+    color: var(--teal);
+    border: 1px solid var(--teal);
+    padding: 1px 7px;
+    border-radius: 20px;
+    opacity: 0.7;
+  }
+  .hf-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 8px; }
+  .hf-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 12px 14px;
+    font-size: 14px;
+    transition: border-color 0.2s;
+  }
+  .hf-card:hover { border-color: var(--border-bright); }
+  .hf-card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 6px; }
+  .hf-card-title { font-weight: 400; font-size: 15px; }
+  .hf-badges { display: flex; gap: 4px; flex-shrink: 0; }
+  .badge {
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 20px;
+    font-family: 'Cinzel', serif;
+    letter-spacing: 0.05em;
+  }
+  .badge-pts { background: rgba(201,168,76,0.15); color: var(--gold); border: 1px solid var(--gold-dim); }
+  .badge-hard { background: rgba(201,168,76,0.1); color: var(--gold-light); }
+  .badge-personal { background: rgba(155,127,234,0.15); color: var(--purple); border: 1px solid rgba(155,127,234,0.3); }
+  .hf-desc { color: var(--text-dim); font-size: 13px; line-height: 1.5; font-style: italic; }
+
+  /* ADMIN PAGE */
+  .admin-gate { text-align: center; padding: 48px 24px; }
+  .admin-gate h2 { font-family: 'Cinzel', serif; font-size: 18px; color: var(--gold); margin-bottom: 20px; }
+  .admin-form { max-width: 320px; margin: 0 auto; }
+  .field { margin-bottom: 14px; text-align: left; }
+  .field label { display: block; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 6px; }
+  .field input, .field select {
+    width: 100%;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 10px 12px;
+    color: var(--text);
+    font-family: 'Crimson Pro', serif;
+    font-size: 16px;
+  }
+  .field input:focus, .field select:focus { outline: none; border-color: var(--border-bright); }
+  .btn {
+    background: rgba(201,168,76,0.1);
+    border: 1px solid var(--border-bright);
+    color: var(--gold);
+    padding: 10px 24px;
+    font-family: 'Cinzel', serif;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s;
+    width: 100%;
+  }
+  .btn:hover { background: rgba(201,168,76,0.2); }
+  .btn-danger { border-color: var(--red); color: var(--red); background: rgba(201,76,76,0.05); }
+  .btn-danger:hover { background: rgba(201,76,76,0.15); }
+
+  .admin-panel { display: none; }
+  .admin-panel.visible { display: block; }
+
+  .admin-toolbar {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .admin-toolbar select {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 8px 12px;
+    font-family: 'Crimson Pro', serif;
+    font-size: 15px;
+    border-radius: 4px;
+    flex: 1;
+    min-width: 160px;
+  }
+  .admin-toolbar select:focus { outline: none; border-color: var(--border-bright); }
+
+  .admin-dungeon { margin-bottom: 24px; }
+  .admin-dungeon-title {
+    font-family: 'Cinzel', serif;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold-dim);
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 8px;
+  }
+  .admin-hf-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .admin-hf-row:last-child { border-bottom: none; }
+  .admin-hf-check {
+    width: 20px; height: 20px;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.15s;
+    background: var(--bg2);
+  }
+  .admin-hf-check.checked {
+    background: rgba(201,168,76,0.2);
+    border-color: var(--gold);
+  }
+  .admin-hf-check.checked::after {
+    content: '✓';
+    color: var(--gold);
+    font-size: 13px;
+    line-height: 1;
+  }
+  .admin-hf-info { flex: 1; }
+  .admin-hf-name { font-size: 15px; }
+  .admin-hf-meta { font-size: 12px; color: var(--text-dim); }
+  .save-indicator {
+    font-size: 12px;
+    color: var(--teal);
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-style: italic;
+  }
+  .save-indicator.show { opacity: 1; }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--bg3);
+    border: 1px solid var(--border-bright);
+    color: var(--text);
+    padding: 12px 20px;
+    border-radius: 4px;
+    font-size: 14px;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s;
+    z-index: 100;
+    pointer-events: none;
+  }
+  .toast.show { opacity: 1; transform: translateY(0); }
+  .toast.error { border-color: var(--red); color: var(--red); }
+
+  /* LOADING */
+  .loading { text-align: center; padding: 48px; color: var(--text-dim); font-style: italic; }
+
+  /* RESPONSIVE */
+  @media (max-width: 600px) {
+    .lb-header, .lb-row {
+      grid-template-columns: 32px 1fr 60px 60px;
+    }
+    .lb-header .col-base, .lb-header .col-bonus,
+    .lb-row .score-base, .lb-row .score-bonus { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="event-title">Gloire à la Compagnie I</div>
+  <div class="event-subtitle">Du 21/04 au 17/05 &nbsp;·&nbsp; Classement en direct</div>
+  <div class="event-subtitle">Organisé par Pouf</div>
+</header>
+
+<nav>
+  <button class="tab active" onclick="showPage('leaderboard', this)">Classement</button>
+  <button class="tab" onclick="showPage('achievements', this)">Hauts-faits</button>
+</nav>
+
+<main>
+
+  <!-- LEADERBOARD -->
+  <div id="page-leaderboard" class="page active">
+    <div id="lb-content" class="loading">Chargement...</div>
+  </div>
+
+  <!-- ACHIEVEMENTS LIST -->
+  <div id="page-achievements" class="page">
+    <div id="ach-content" class="loading">Chargement...</div>
+  </div>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================================================
+// CONFIG — remplace ces valeurs par les tiennes
+// ============================================================
+const SUPABASE_URL = 'https://ehsnzujkmtbzikdbqnjt.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_VaKW09b17IXBlU_snJ7S_g_xiwNzyvH';
+// ============================================================
+
+// ---- DATA LOCALE (hauts-faits) ----
+const ACHIEVEMENTS = [
+  {id:1,dungeon:"Abime des marins",title:"Surfeur dans l'âme",points:10,hard:false,personal:false},
+  {id:2,dungeon:"Abime des marins",title:"BIG PULL",points:10,hard:false,personal:false},
+  {id:3,dungeon:"Abime des marins",title:"Pourquoi choisir",points:20,hard:true,personal:false},
+  {id:4,dungeon:"Bois de L'aube",title:"La charge sauvage",points:10,hard:false,personal:false},
+  {id:5,dungeon:"Bois de L'aube",title:"Reforestation",points:10,hard:false,personal:false},
+  {id:6,dungeon:"Bois de L'aube",title:"Sang pour 100",points:20,hard:true,personal:false},
+  {id:7,dungeon:"Carrière tombe-dieu",title:"Incognito",points:10,hard:false,personal:false},
+  {id:8,dungeon:"Carrière tombe-dieu",title:"Rock Solid",points:10,hard:false,personal:false},
+  {id:9,dungeon:"Carrière tombe-dieu",title:"Tout est dans le timing",points:20,hard:true,personal:false},
+  {id:10,dungeon:"Caveau de Lamespectre",title:"Allié ou Ennemi ?",points:10,hard:false,personal:false},
+  {id:11,dungeon:"Caveau de Lamespectre",title:"Pierre qui roule n'amasse pas mousse",points:10,hard:false,personal:false},
+  {id:12,dungeon:"Caveau de Lamespectre",title:"Devy Jones",points:10,hard:false,personal:false},
+  {id:13,dungeon:"Caveau de Lamespectre",title:"Complètement Marteau",points:10,hard:false,personal:false},
+  {id:14,dungeon:"Caveau de Lamespectre",title:"Je connais un passage",points:10,hard:false,personal:false},
+  {id:15,dungeon:"Caveau de Lamespectre",title:"Allié",points:20,hard:true,personal:false},
+  {id:16,dungeon:"Coeur de guivre",title:"Givré",points:10,hard:false,personal:false},
+  {id:17,dungeon:"Coeur de guivre",title:"Transit",points:10,hard:false,personal:true},
+  {id:18,dungeon:"Coeur de guivre",title:"Sculpture sur Glace",points:20,hard:true,personal:false},
+  {id:19,dungeon:"Coeur de Tuzari",title:"La marche",points:10,hard:false,personal:false},
+  {id:20,dungeon:"Coeur de Tuzari",title:"Balo'Tuzari",points:10,hard:false,personal:false},
+  {id:21,dungeon:"Coeur de Tuzari",title:"Pulvérisateur",points:10,hard:false,personal:false},
+  {id:22,dungeon:"Coeur de Tuzari",title:"Qu'ils brûlent",points:10,hard:false,personal:false},
+  {id:23,dungeon:"Coeur de Tuzari",title:"Mauvaise graine",points:10,hard:false,personal:false},
+  {id:24,dungeon:"Coeur de Tuzari",title:"Petits pas",points:20,hard:true,personal:false},
+  {id:25,dungeon:"Creux Soyeux",title:"Progéniture",points:10,hard:false,personal:false},
+  {id:26,dungeon:"Creux Soyeux",title:"Insecticide",points:10,hard:false,personal:false},
+  {id:27,dungeon:"Creux Soyeux",title:"Cent Dix Pelles",points:20,hard:true,personal:false},
+  {id:28,dungeon:"Guet Tempete",title:"Grappin",points:10,hard:false,personal:false},
+  {id:29,dungeon:"Guet Tempete",title:"Enragé",points:10,hard:false,personal:false},
+  {id:30,dungeon:"Guet Tempete",title:"World Boss",points:20,hard:true,personal:false},
+  {id:31,dungeon:"La chute Cithrel",title:"La roulette",points:10,hard:false,personal:true},
+  {id:32,dungeon:"La chute Cithrel",title:"Soif de Sang",points:10,hard:false,personal:false},
+  {id:33,dungeon:"La chute Cithrel",title:"Big bang",points:10,hard:false,personal:false},
+  {id:34,dungeon:"La chute Cithrel",title:"La montagne",points:10,hard:false,personal:false},
+  {id:35,dungeon:"La chute Cithrel",title:"Disco",points:10,hard:false,personal:false},
+  {id:36,dungeon:"La chute Cithrel",title:"Zéro Absolu",points:20,hard:true,personal:true},
+  {id:37,dungeon:"Marché d'Urrak",title:"La Paire",points:10,hard:false,personal:false},
+  {id:38,dungeon:"Marché d'Urrak",title:"POUR LA FAMILLE",points:10,hard:false,personal:false},
+  {id:39,dungeon:"Marché d'Urrak",title:"La Maire",points:20,hard:true,personal:false},
+  {id:40,dungeon:"Sables Empyréens",title:"Comme un pro",points:10,hard:false,personal:true},
+  {id:41,dungeon:"Sables Empyréens",title:"Sneaky",points:10,hard:false,personal:false},
+  {id:42,dungeon:"Sables Empyréens",title:"Comme un dieu",points:20,hard:true,personal:true},
+  {id:43,dungeon:"Saccage de Drakheim",title:"C'est pas comme ça qu'on fait",points:10,hard:false,personal:false},
+  {id:44,dungeon:"Saccage de Drakheim",title:"Je ne sais pas nager",points:10,hard:false,personal:false},
+  {id:45,dungeon:"Saccage de Drakheim",title:"Dans le doute",points:10,hard:false,personal:false},
+  {id:46,dungeon:"Saccage de Drakheim",title:"Hydrophobe",points:10,hard:false,personal:true},
+  {id:47,dungeon:"Saccage de Drakheim",title:"De feu et de glace",points:10,hard:false,personal:false},
+  {id:48,dungeon:"Saccage de Drakheim",title:"Jamais 203",points:20,hard:true,personal:false},
+];
+
+const DUNGEONS_ORDER = [
+  "Abime des marins","Bois de L'aube","Carrière tombe-dieu",
+  "Caveau de Lamespectre","Coeur de guivre","Coeur de Tuzari",
+  "Creux Soyeux","Guet Tempete","La chute Cithrel",
+  "Marché d'Urrak","Sables Empyréens","Saccage de Drakheim"
+];
+
+// ---- UTILS ----
+function toast(msg, isError=false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (isError ? ' error' : '');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.className = 'toast', 3000);
+}
+
+function showPage(id, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  btn.classList.add('active');
+  if (id === 'leaderboard') loadLeaderboard();
+  if (id === 'achievements') renderAchievements();
+}
+
+// ---- SUPABASE FETCH ----
+async function sbFetch(path, key, opts={}) {
+  const url = (SUPABASE_URL === 'REMPLACE_PAR_TON_URL' ? adminUrl : SUPABASE_URL) + path;
+  const apiKey = key || SUPABASE_ANON_KEY;
+  const res = await fetch(url, {
+    headers: {
+      'apikey': apiKey,
+      'Authorization': 'Bearer ' + apiKey,
+      'Content-Type': 'application/json',
+      'Prefer': opts.prefer || '',
+      ...opts.headers
+    },
+    method: opts.method || 'GET',
+    body: opts.body ? JSON.stringify(opts.body) : undefined
+  });
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(err);
+  }
+  if (res.status === 204) return null;
+  return res.json();
+}
+
+// ---- SCORE CALCULATION (côté client) ----
+function computeScores(players, completions) {
+  // completions: [{player_id, achievement_id}]
+  const byPlayer = {};
+  players.forEach(p => byPlayer[p.id] = new Set());
+  completions.forEach(c => {
+    if (byPlayer[c.player_id]) byPlayer[c.player_id].add(c.achievement_id);
+  });
+
+  return players.map(p => {
+    const done = byPlayer[p.id];
+    let base = 0;
+    done.forEach(aid => {
+      const a = ACHIEVEMENTS.find(x => x.id === aid);
+      if (a) base += a.points;
+    });
+    // Bonus par donjon
+    let bonus = 0;
+    DUNGEONS_ORDER.forEach(d => {
+      const dungeonHFs = ACHIEVEMENTS.filter(a => a.dungeon === d);
+      if (dungeonHFs.every(a => done.has(a.id))) bonus += 5;
+    });
+    return {
+      id: p.id,
+      name: p.name,
+      base,
+      bonus,
+      total: base + bonus,
+      hf_count: done.size,
+      done
+    };
+  }).sort((a, b) => b.total - a.total);
+}
+
+// ---- LEADERBOARD ----
+let lbData = null;
+
+async function loadLeaderboard() {
+  if (SUPABASE_URL === 'REMPLACE_PAR_TON_URL') {
+    document.getElementById('lb-content').innerHTML = '<div class="loading">Configure ton URL Supabase dans le fichier HTML pour voir les données en direct.</div>';
+    return;
+  }
+  document.getElementById('lb-content').innerHTML = '<div class="loading">Chargement...</div>';
+  try {
+    const [players, completions] = await Promise.all([
+      sbFetch('/rest/v1/players?select=id,name&order=name'),
+      sbFetch('/rest/v1/player_achievements?select=player_id,achievement_id')
+    ]);
+    lbData = computeScores(players, completions);
+    renderLeaderboard(lbData);
+  } catch(e) {
+    document.getElementById('lb-content').innerHTML = '<div class="loading">Erreur de chargement. Vérifie ta config Supabase.</div>';
+  }
+}
+
+function renderLeaderboard(scores) {
+  const rankIcons = ['I', 'II', 'III'];
+  let html = `<div class="lb-header">
+    <div></div><div>Joueur</div>
+    <div class="col-base" style="text-align:right">Base</div>
+    <div class="col-bonus" style="text-align:right">Bonus</div>
+    <div style="text-align:right">HF</div>
+    <div style="text-align:right">Total</div>
+  </div>`;
+
+  scores.forEach((s, i) => {
+    const rankClass = i < 3 ? `rank-${i+1}` : '';
+    const rankLabel = i < 3 ? `<span style="font-style:italic;font-size:11px">${rankIcons[i]}</span>` : `<span style="font-size:12px">${i+1}</span>`;
+
+    // Dungeon detail
+    let detailHtml = '<div class="lb-detail"><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 20px">';
+    DUNGEONS_ORDER.forEach(d => {
+      const dHFs = ACHIEVEMENTS.filter(a => a.dungeon === d);
+      const dDone = dHFs.filter(a => s.done.has(a.id)).length;
+      const complete = dDone === dHFs.length;
+      const pct = Math.round(dDone / dHFs.length * 100);
+      detailHtml += `<div class="dungeon-progress">
+        <div class="dp-header"><span class="dp-name">${d}</span><span class="dp-count">${dDone}/${dHFs.length}${complete ? ' +5pts' : ''}</span></div>
+        <div class="dp-bar-bg"><div class="dp-bar-fill ${complete ? 'complete' : ''}" style="width:${pct}%"></div></div>
+      </div>`;
+    });
+    detailHtml += '</div></div>';
+
+    html += `<div class="lb-row ${rankClass}" onclick="this.classList.toggle('open')">
+      <div class="rank-num">${rankLabel}</div>
+      <div class="player-name">${s.name}</div>
+      <div class="score-base col-base">${s.base}</div>
+      <div class="score-bonus col-bonus">${s.bonus > 0 ? '+'+s.bonus : '—'}</div>
+      <div class="hf-count">${s.hf_count}</div>
+      <div class="score-total">${s.total}</div>
+      ${detailHtml}
+    </div>`;
+  });
+
+  document.getElementById('lb-content').innerHTML = html;
+  // Auto-refresh toutes les 30s
+  clearTimeout(window._lbTimer);
+  window._lbTimer = setTimeout(loadLeaderboard, 30000);
+}
+
+// ---- ACHIEVEMENTS LIST ----
+function renderAchievements() {
+  let html = '';
+  DUNGEONS_ORDER.forEach(d => {
+    const hfs = ACHIEVEMENTS.filter(a => a.dungeon === d);
+    const maxPts = hfs.reduce((s, a) => s + a.points, 0) + 5;
+    html += `<div class="dungeon-block">
+      <div class="dungeon-title">${d} <span class="bonus-tag">+5 pts si complet</span> <span style="margin-left:auto;font-size:11px;color:var(--text-dim)">${maxPts} pts max</span></div>
+      <div class="hf-grid">`;
+    hfs.forEach(a => {
+      html += `<div class="hf-card">
+        <div class="hf-card-header">
+          <span class="hf-card-title">${a.title}</span>
+          <div class="hf-badges">
+            ${a.hard ? '<span class="badge badge-hard">⭐</span>' : ''}
+            ${a.personal ? '<span class="badge badge-personal">👤</span>' : ''}
+            <span class="badge badge-pts">${a.points} pts</span>
+          </div>
+        </div>
+      </div>`;
+    });
+    html += '</div></div>';
+  });
+  document.getElementById('ach-content').innerHTML = html;
+}
+
+// ---- ADMIN ----
+let adminUrl = '';
+let adminKey = '';
+let adminPlayers = [];
+let adminCurrentPlayer = null;
+let adminCurrentDone = new Set();
+
+function adminLogin() {
+  adminUrl = document.getElementById('input-url').value.trim().replace(/\/$/, '');
+  adminKey = document.getElementById('input-key').value.trim();
+  if (!adminUrl || !adminKey) { toast('Remplis les deux champs', true); return; }
+  loadAdminData();
+}
+
+async function loadAdminData() {
+  try {
+    adminPlayers = await sbFetch('/rest/v1/players?select=id,name&order=name', adminKey);
+    const sel = document.getElementById('admin-player-select');
+    sel.innerHTML = '<option value="">— Choisir un joueur —</option>';
+    adminPlayers.forEach(p => {
+      const opt = document.createElement('option');
+      opt.value = p.id;
+      opt.textContent = p.name;
+      sel.appendChild(opt);
+    });
+    document.getElementById('admin-gate').style.display = 'none';
+    document.getElementById('admin-panel').classList.add('visible');
+    toast('Connecté !');
+  } catch(e) {
+    toast('Erreur de connexion. Vérifie tes clés.', true);
+  }
+}
+
+async function loadAdminPlayer() {
+  const playerId = parseInt(document.getElementById('admin-player-select').value);
+  if (!playerId) { document.getElementById('admin-hf-list').innerHTML = ''; return; }
+  adminCurrentPlayer = playerId;
+
+  try {
+    const completions = await sbFetch(`/rest/v1/player_achievements?player_id=eq.${playerId}&select=achievement_id`, adminKey);
+    adminCurrentDone = new Set(completions.map(c => c.achievement_id));
+    renderAdminHFs();
+  } catch(e) {
+    toast('Erreur de chargement du joueur', true);
+  }
+}
+
+function renderAdminHFs() {
+  let html = '';
+  DUNGEONS_ORDER.forEach(d => {
+    const hfs = ACHIEVEMENTS.filter(a => a.dungeon === d);
+    html += `<div class="admin-dungeon">
+      <div class="admin-dungeon-title">${d}</div>`;
+    hfs.forEach(a => {
+      const checked = adminCurrentDone.has(a.id);
+      html += `<div class="admin-hf-row">
+        <div class="admin-hf-check ${checked ? 'checked' : ''}" onclick="toggleHF(${a.id}, this)"></div>
+        <div class="admin-hf-info">
+          <div class="admin-hf-name">${a.title} ${a.hard ? '⭐' : ''} ${a.personal ? '👤' : ''}</div>
+          <div class="admin-hf-meta">${a.points} pts</div>
+        </div>
+      </div>`;
+    });
+    html += '</div>';
+  });
+  document.getElementById('admin-hf-list').innerHTML = html;
+}
+
+async function toggleHF(achievementId, el) {
+  const isChecked = el.classList.contains('checked');
+  el.style.pointerEvents = 'none';
+
+  try {
+    if (isChecked) {
+      // Décocher
+      await sbFetch(
+        `/rest/v1/player_achievements?player_id=eq.${adminCurrentPlayer}&achievement_id=eq.${achievementId}`,
+        adminKey,
+        { method: 'DELETE', prefer: 'return=minimal' }
+      );
+      el.classList.remove('checked');
+      adminCurrentDone.delete(achievementId);
+    } else {
+      // Cocher
+      await sbFetch('/rest/v1/player_achievements', adminKey, {
+        method: 'POST',
+        prefer: 'return=minimal',
+        body: { player_id: adminCurrentPlayer, achievement_id: achievementId }
+      });
+      el.classList.add('checked');
+      adminCurrentDone.add(achievementId);
+    }
+    const ind = document.getElementById('save-indicator');
+    ind.classList.add('show');
+    clearTimeout(ind._t);
+    ind._t = setTimeout(() => ind.classList.remove('show'), 2000);
+  } catch(e) {
+    toast('Erreur lors de la mise à jour', true);
+  }
+  el.style.pointerEvents = '';
+}
+
+// ---- INIT ----
+loadLeaderboard();
+renderAchievements();
+</script>
+</body>
+</html>
