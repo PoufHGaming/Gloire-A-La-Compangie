@@ -61,6 +61,31 @@
     text-transform: uppercase;
     font-weight: 300;
   }
+  .social-links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 16px;
+  }
+  .social-link {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 14px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    text-decoration: none;
+    color: var(--text-dim);
+    font-size: 12px;
+    font-family: 'Cinzel', serif;
+    letter-spacing: 0.08em;
+    transition: all 0.2s;
+  }
+  .social-link:hover { color: var(--text); }
+  .social-link.twitch:hover { border-color: #9147ff; color: #9147ff; }
+  .social-link.discord:hover { border-color: #5865f2; color: #5865f2; }
+  .social-icon { width: 15px; height: 15px; flex-shrink: 0; }
 
   /* NAV */
   nav {
@@ -147,16 +172,26 @@
   }
   .score-bonus { color: var(--teal); }
 
-  /* PROGRESS BAR per dungeon (detail) */
-  .lb-detail { display: none; padding: 12px 16px 16px 56px; }
+  /* PLAYER DETAIL IN LEADERBOARD */
+  .lb-detail { display: none; padding: 16px 16px 20px 56px; grid-column: 1 / -1; }
   .lb-row.open .lb-detail { display: block; }
-  .dungeon-progress { margin-bottom: 10px; }
-  .dp-header { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px; }
-  .dp-name { color: var(--text-dim); }
+  .lb-row { cursor: pointer; }
+  .lb-row .player-name::after { content: ' \25B8'; font-size: 10px; color: var(--text-dim); opacity: 0.5; }
+  .lb-row.open .player-name::after { content: ' \25BE'; }
+  .dungeon-section { margin-bottom: 16px; }
+  .dp-header { display: flex; justify-content: space-between; align-items: center; font-size: 11px; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+  .dp-name { color: var(--text-dim); font-family: 'Cinzel', serif; letter-spacing: 0.08em; text-transform: uppercase; }
   .dp-count { color: var(--gold-dim); }
-  .dp-bar-bg { height: 3px; background: var(--bg3); border-radius: 2px; }
-  .dp-bar-fill { height: 3px; background: var(--gold); border-radius: 2px; transition: width 0.4s; }
-  .dp-bar-fill.complete { background: var(--teal); }
+  .dp-count.complete { color: var(--teal); }
+  .hf-list { display: flex; flex-direction: column; gap: 3px; }
+  .hf-item { display: flex; align-items: center; gap: 10px; padding: 5px 8px; border-radius: 3px; font-size: 13px; }
+  .hf-item.done { background: rgba(76,168,168,0.07); }
+  .hf-check-icon { width: 16px; height: 16px; border-radius: 50%; border: 1px solid var(--border); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 10px; }
+  .hf-item.done .hf-check-icon { border-color: var(--teal); background: rgba(76,168,168,0.2); color: var(--teal); }
+  .hf-item-name { flex: 1; color: var(--text-dim); }
+  .hf-item.done .hf-item-name { color: var(--text); }
+  .hf-item-pts { font-size: 11px; color: var(--text-dim); }
+  .hf-item.done .hf-item-pts { color: var(--teal); }
 
   /* ACHIEVEMENTS PAGE */
   .dungeon-block { margin-bottom: 28px; }
@@ -188,13 +223,27 @@
     border-radius: 4px;
     padding: 12px 14px;
     font-size: 14px;
+    cursor: pointer;
     transition: border-color 0.2s;
+    user-select: none;
   }
   .hf-card:hover { border-color: var(--border-bright); }
-  .hf-card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 6px; }
+  .hf-card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
   .hf-card-title { font-weight: 400; font-size: 15px; }
-  .hf-badges { display: flex; gap: 4px; flex-shrink: 0; }
-  .badge {
+  .hf-badges { display: flex; gap: 4px; flex-shrink: 0; align-items: flex-start; }
+  .hf-card-desc {
+    display: none;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+    color: var(--text-dim);
+    font-size: 13px;
+    line-height: 1.6;
+    font-style: italic;
+  }
+  .hf-card.open .hf-card-desc { display: block; }
+  .hf-card-title::after { content: ' \25B8'; font-size: 10px; color: var(--text-dim); opacity: 0.4; }
+  .hf-card.open .hf-card-title::after { content: ' \25BE'; }
     font-size: 10px;
     padding: 1px 6px;
     border-radius: 20px;
@@ -204,7 +253,7 @@
   .badge-pts { background: rgba(201,168,76,0.15); color: var(--gold); border: 1px solid var(--gold-dim); }
   .badge-hard { background: rgba(201,168,76,0.1); color: var(--gold-light); }
   .badge-personal { background: rgba(155,127,234,0.15); color: var(--purple); border: 1px solid rgba(155,127,234,0.3); }
-  .hf-desc { color: var(--text-dim); font-size: 13px; line-height: 1.5; font-style: italic; }
+  .badge {
 
   /* ADMIN PAGE */
   .admin-gate { text-align: center; padding: 48px 24px; }
@@ -356,6 +405,20 @@
   <div class="event-title">Gloire à la Compagnie I</div>
   <div class="event-subtitle">Du 21/04 au 17/05 &nbsp;·&nbsp; Classement en direct</div>
   <div class="event-subtitle">Organisé par Pouf</div>
+  <div class="social-links">
+    <a href="https://www.twitch.tv/pouf_hgaming" target="_blank" rel="noopener" class="social-link twitch">
+      <svg class="social-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+        <path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714z"/>
+      </svg>
+      Twitch
+    </a>
+    <a href="https://discord.gg/3WH65QCARa" target="_blank" rel="noopener" class="social-link discord">
+      <svg class="social-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+        <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057.1 18.08.11 18.1.132 18.115a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+      </svg>
+      Discord
+    </a>
+  </div>
 </header>
 
 <nav>
@@ -389,54 +452,54 @@ const SUPABASE_ANON_KEY = 'sb_publishable_VaKW09b17IXBlU_snJ7S_g_xiwNzyvH';
 
 // ---- DATA LOCALE (hauts-faits) ----
 const ACHIEVEMENTS = [
-  {id:1,dungeon:"Abime des marins",title:"Surfeur dans l'âme",points:10,hard:false,personal:false},
-  {id:2,dungeon:"Abime des marins",title:"BIG PULL",points:10,hard:false,personal:false},
-  {id:3,dungeon:"Abime des marins",title:"Pourquoi choisir",points:20,hard:true,personal:false},
-  {id:4,dungeon:"Bois de L'aube",title:"La charge sauvage",points:10,hard:false,personal:false},
-  {id:5,dungeon:"Bois de L'aube",title:"Reforestation",points:10,hard:false,personal:false},
-  {id:6,dungeon:"Bois de L'aube",title:"Sang pour 100",points:20,hard:true,personal:false},
-  {id:7,dungeon:"Carrière tombe-dieu",title:"Incognito",points:10,hard:false,personal:false},
-  {id:8,dungeon:"Carrière tombe-dieu",title:"Rock Solid",points:10,hard:false,personal:false},
-  {id:9,dungeon:"Carrière tombe-dieu",title:"Tout est dans le timing",points:20,hard:true,personal:false},
-  {id:10,dungeon:"Caveau de Lamespectre",title:"Allié ou Ennemi ?",points:10,hard:false,personal:false},
-  {id:11,dungeon:"Caveau de Lamespectre",title:"Pierre qui roule n'amasse pas mousse",points:10,hard:false,personal:false},
-  {id:12,dungeon:"Caveau de Lamespectre",title:"Devy Jones",points:10,hard:false,personal:false},
-  {id:13,dungeon:"Caveau de Lamespectre",title:"Complètement Marteau",points:10,hard:false,personal:false},
-  {id:14,dungeon:"Caveau de Lamespectre",title:"Je connais un passage",points:10,hard:false,personal:false},
-  {id:15,dungeon:"Caveau de Lamespectre",title:"Allié",points:20,hard:true,personal:false},
-  {id:16,dungeon:"Coeur de guivre",title:"Givré",points:10,hard:false,personal:false},
-  {id:17,dungeon:"Coeur de guivre",title:"Transit",points:10,hard:false,personal:true},
-  {id:18,dungeon:"Coeur de guivre",title:"Sculpture sur Glace",points:20,hard:true,personal:false},
-  {id:19,dungeon:"Coeur de Tuzari",title:"La marche",points:10,hard:false,personal:false},
-  {id:20,dungeon:"Coeur de Tuzari",title:"Balo'Tuzari",points:10,hard:false,personal:false},
-  {id:21,dungeon:"Coeur de Tuzari",title:"Pulvérisateur",points:10,hard:false,personal:false},
-  {id:22,dungeon:"Coeur de Tuzari",title:"Qu'ils brûlent",points:10,hard:false,personal:false},
-  {id:23,dungeon:"Coeur de Tuzari",title:"Mauvaise graine",points:10,hard:false,personal:false},
-  {id:24,dungeon:"Coeur de Tuzari",title:"Petits pas",points:20,hard:true,personal:false},
-  {id:25,dungeon:"Creux Soyeux",title:"Progéniture",points:10,hard:false,personal:false},
-  {id:26,dungeon:"Creux Soyeux",title:"Insecticide",points:10,hard:false,personal:false},
-  {id:27,dungeon:"Creux Soyeux",title:"Cent Dix Pelles",points:20,hard:true,personal:false},
-  {id:28,dungeon:"Guet Tempete",title:"Grappin",points:10,hard:false,personal:false},
-  {id:29,dungeon:"Guet Tempete",title:"Enragé",points:10,hard:false,personal:false},
-  {id:30,dungeon:"Guet Tempete",title:"World Boss",points:20,hard:true,personal:false},
-  {id:31,dungeon:"La chute Cithrel",title:"La roulette",points:10,hard:false,personal:true},
-  {id:32,dungeon:"La chute Cithrel",title:"Soif de Sang",points:10,hard:false,personal:false},
-  {id:33,dungeon:"La chute Cithrel",title:"Big bang",points:10,hard:false,personal:false},
-  {id:34,dungeon:"La chute Cithrel",title:"La montagne",points:10,hard:false,personal:false},
-  {id:35,dungeon:"La chute Cithrel",title:"Disco",points:10,hard:false,personal:false},
-  {id:36,dungeon:"La chute Cithrel",title:"Zéro Absolu",points:20,hard:true,personal:true},
-  {id:37,dungeon:"Marché d'Urrak",title:"La Paire",points:10,hard:false,personal:false},
-  {id:38,dungeon:"Marché d'Urrak",title:"POUR LA FAMILLE",points:10,hard:false,personal:false},
-  {id:39,dungeon:"Marché d'Urrak",title:"La Maire",points:20,hard:true,personal:false},
-  {id:40,dungeon:"Sables Empyréens",title:"Comme un pro",points:10,hard:false,personal:true},
-  {id:41,dungeon:"Sables Empyréens",title:"Sneaky",points:10,hard:false,personal:false},
-  {id:42,dungeon:"Sables Empyréens",title:"Comme un dieu",points:20,hard:true,personal:true},
-  {id:43,dungeon:"Saccage de Drakheim",title:"C'est pas comme ça qu'on fait",points:10,hard:false,personal:false},
-  {id:44,dungeon:"Saccage de Drakheim",title:"Je ne sais pas nager",points:10,hard:false,personal:false},
-  {id:45,dungeon:"Saccage de Drakheim",title:"Dans le doute",points:10,hard:false,personal:false},
-  {id:46,dungeon:"Saccage de Drakheim",title:"Hydrophobe",points:10,hard:false,personal:true},
-  {id:47,dungeon:"Saccage de Drakheim",title:"De feu et de glace",points:10,hard:false,personal:false},
-  {id:48,dungeon:"Saccage de Drakheim",title:"Jamais 203",points:20,hard:true,personal:false},
+  {id:1,dungeon:"Abime des marins",title:"Surfeur dans l'âme",desc:"Tous les joueurs du groupe doivent se prendre 1 vague (subir les dégâts et se faire propulser) sans utiliser de sorts pendant le combat contre Sinthara.",points:10,hard:false,personal:false},
+  {id:2,dungeon:"Abime des marins",title:"BIG PULL",desc:"Le groupe doit tuer 40 forgotten soul en 1 pull.",points:10,hard:false,personal:false},
+  {id:3,dungeon:"Abime des marins",title:"Pourquoi choisir",desc:"Le groupe doit se séparer en 2 et se rejoindre au feu de camp (Reliques Skip & Portail interdit).",points:20,hard:true,personal:false},
+  {id:4,dungeon:"Bois de L'aube",title:"La charge sauvage",desc:"Tous les totems doivent être détruits avec la charge du cerf pendant le combat contre Malgut. Aucun joueur ne doit en détruire.",points:10,hard:false,personal:false},
+  {id:5,dungeon:"Bois de L'aube",title:"Reforestation",desc:"Le groupe ne doit tuer aucune créature de type plante du donjon.",points:10,hard:false,personal:false},
+  {id:6,dungeon:"Bois de L'aube",title:"Sang pour 100",desc:"Le groupe doit tuer 4 Bloodstone Goliath à 10sec d'intervalle.",points:20,hard:true,personal:false},
+  {id:7,dungeon:"Carrière tombe-dieu",title:"Incognito",desc:"Aucun membre du groupe ne doit aggro de mob sur la plateforme (Reliques Skip & Portail interdit).",points:10,hard:false,personal:false},
+  {id:8,dungeon:"Carrière tombe-dieu",title:"Rock Solid",desc:"Le groupe doit tuer les 2 Enraged Earth Elemental pendant le combat contre le Titan.",points:10,hard:false,personal:false},
+  {id:9,dungeon:"Carrière tombe-dieu",title:"Tout est dans le timing",desc:"Obtenir 50% de score de donjon en étant uniquement sur la plateforme et sans tuer la patrouille (Enforcer).",points:20,hard:true,personal:false},
+  {id:10,dungeon:"Caveau de Lamespectre",title:"Allié ou Ennemi ?",desc:"Le groupe doit survivre à un combat avec 4 sentinelles dans un pull. Se valide quand les joueurs ne sont plus en combat.",points:10,hard:false,personal:false},
+  {id:11,dungeon:"Caveau de Lamespectre",title:"Pierre qui roule n'amasse pas mousse",desc:"Aucun membre du groupe ne doit VOLONTAIREMENT infliger des dégâts à la boule d'or pendant le combat contre Bael Aurum.",points:10,hard:false,personal:false},
+  {id:12,dungeon:"Caveau de Lamespectre",title:"Devy Jones",desc:"1 cannonier doit être en vie au début de la P2 de Katrine.",points:10,hard:false,personal:false},
+  {id:13,dungeon:"Caveau de Lamespectre",title:"Complètement Marteau",desc:"Le groupe doit se prendre TOUS les requins pendant le combat contre Marrow.",points:10,hard:false,personal:false},
+  {id:14,dungeon:"Caveau de Lamespectre",title:"Je connais un passage",desc:"Le groupe doit vaincre Marrow en premier SANS tuer aucune créature (Reliques Skip & Portail interdit).",points:10,hard:false,personal:false},
+  {id:15,dungeon:"Caveau de Lamespectre",title:"Allié",desc:"Le groupe doit tuer Bael Aurum grâce aux sentinelles.",points:20,hard:true,personal:false},
+  {id:16,dungeon:"Coeur de guivre",title:"Givré",desc:"Le groupe ne doit JAMAIS interrompre le sort \"Frigid Mists\" de Veras.",points:10,hard:false,personal:false},
+  {id:17,dungeon:"Coeur de guivre",title:"Transit",desc:"Le joueur doit atteindre 10 stacks de givre.",points:10,hard:false,personal:true},
+  {id:18,dungeon:"Coeur de guivre",title:"Sculpture sur Glace",desc:"Le groupe doit vaincre les 2 Greater Ice Elemental à 10sec d'intervalle avec Veras.",points:20,hard:true,personal:false},
+  {id:19,dungeon:"Coeur de Tuzari",title:"La marche",desc:"Aucune créature ne doit être ralentie, contrôlée pendant le combat contre Ez'rath.",points:10,hard:false,personal:false},
+  {id:20,dungeon:"Coeur de Tuzari",title:"Balo'Tuzari",desc:"Aucun membre du groupe ne doit se prendre une orbe pendant le combat contre Moar'gore.",points:10,hard:false,personal:false},
+  {id:21,dungeon:"Coeur de Tuzari",title:"Pulvérisateur",desc:"Toutes les plantes du donjon doivent être tuées.",points:10,hard:false,personal:false},
+  {id:22,dungeon:"Coeur de Tuzari",title:"Qu'ils brûlent",desc:"Aucun membre du groupe ne doit tuer de Pyromancien (Reliques Skip & Portail interdit).",points:10,hard:false,personal:false},
+  {id:23,dungeon:"Coeur de Tuzari",title:"Mauvaise graine",desc:"Pendant le combat contre Vun'Kahr, aucune plante ne doit apparaître — marcher sur TOUTES les plantes.",points:10,hard:false,personal:false},
+  {id:24,dungeon:"Coeur de Tuzari",title:"Petits pas",desc:"Aucun membre du groupe AINSI que Moar'gore ne doit se prendre une orbe.",points:20,hard:true,personal:false},
+  {id:25,dungeon:"Creux Soyeux",title:"Progéniture",desc:"Aucun membre du groupe ne doit tuer d'araignée pendant le combat contre Vexira (exceptée Vexira évidemment).",points:10,hard:false,personal:false},
+  {id:26,dungeon:"Creux Soyeux",title:"Insecticide",desc:"Le groupe doit vaincre toutes les horreurs (Araignée Orange) dans le donjon.",points:10,hard:false,personal:false},
+  {id:27,dungeon:"Creux Soyeux",title:"Cent Dix Pelles",desc:"Aucun membre du groupe ne doit utiliser de dispell (Reliques dispell interdit).",points:20,hard:true,personal:false},
+  {id:28,dungeon:"Guet Tempete",title:"Grappin",desc:"Le groupe doit tuer Brogg alors qu'au moins 4 Mancatcher sont encore en vie.",points:10,hard:false,personal:false},
+  {id:29,dungeon:"Guet Tempete",title:"Enragé",desc:"Le groupe doit vaincre un pillard qui a atteint 20 stacks.",points:10,hard:false,personal:false},
+  {id:30,dungeon:"Guet Tempete",title:"World Boss",desc:"Le groupe doit vaincre un pillard qui a atteint 35 stacks.",points:20,hard:true,personal:false},
+  {id:31,dungeon:"La chute Cithrel",title:"La roulette",desc:"Pendant le combat contre Noor, le joueur ne doit se prendre aucun dégât de \"Cold-blooded Twist\" et \"Razor Trap\".",points:10,hard:false,personal:true},
+  {id:32,dungeon:"La chute Cithrel",title:"Soif de Sang",desc:"Pendant le combat contre Cithrel, tous les membres du groupe doivent avoir au moins 1 stack de sang à chaque utilisation du sort.",points:10,hard:false,personal:false},
+  {id:33,dungeon:"La chute Cithrel",title:"Big bang",desc:"Pendant le combat contre Koros, le groupe doit réussir à détruire 4 orbes en un coup.",points:10,hard:false,personal:false},
+  {id:34,dungeon:"La chute Cithrel",title:"La montagne",desc:"Le groupe ne doit tuer AUCUN élémentaire de glace (Reliques Skip & Portail interdit).",points:10,hard:false,personal:false},
+  {id:35,dungeon:"La chute Cithrel",title:"Disco",desc:"Le groupe doit amener la MÊME orbe dans TOUTES les zones des boss.",points:10,hard:false,personal:false},
+  {id:36,dungeon:"La chute Cithrel",title:"Zéro Absolu",desc:"Le joueur doit obtenir 20 stacks de givre.",points:20,hard:true,personal:true},
+  {id:37,dungeon:"Marché d'Urrak",title:"La Paire",desc:"Le groupe doit faire monter un boss à 40 stacks minimum, avant de le tuer.",points:10,hard:false,personal:false},
+  {id:38,dungeon:"Marché d'Urrak",title:"POUR LA FAMILLE",desc:"Le groupe doit libérer tous les villageois sans dépasser 100% d'accomplissement (8 Piliers).",points:10,hard:false,personal:false},
+  {id:39,dungeon:"Marché d'Urrak",title:"La Maire",desc:"Le groupe doit faire monter un boss à 70 stacks minimum, avant de le tuer.",points:20,hard:true,personal:false},
+  {id:40,dungeon:"Sables Empyréens",title:"Comme un pro",desc:"Le joueur ne doit se prendre aucun dégât de : zone au sol, rayon, AoE boss pendant le combat contre Sin Magir.",points:10,hard:false,personal:true},
+  {id:41,dungeon:"Sables Empyréens",title:"Sneaky",desc:"Le groupe doit accomplir le donjon sans aggro une seule patrouille (Reliques Skip & Portail interdit).",points:10,hard:false,personal:false},
+  {id:42,dungeon:"Sables Empyréens",title:"Comme un dieu",desc:"Le joueur ne doit se prendre aucun dégât esquivable de tout le donjon.",points:20,hard:true,personal:true},
+  {id:43,dungeon:"Saccage de Drakheim",title:"C'est pas comme ça qu'on fait",desc:"Le joueur doit obtenir 10 stacks de Givre & 10 stacks de Feu dans le même combat (pas en même temps).",points:10,hard:false,personal:false},
+  {id:44,dungeon:"Saccage de Drakheim",title:"Je ne sais pas nager",desc:"Aucun membre du groupe ne doit mettre de pied dans l'eau.",points:10,hard:false,personal:false},
+  {id:45,dungeon:"Saccage de Drakheim",title:"Dans le doute",desc:"Pendant le combat contre Auga Handhafi, vous devez détruire au moins 8 orbes avant de le tuer. (Toutes les orbes du boss comptent.)",points:10,hard:false,personal:false},
+  {id:46,dungeon:"Saccage de Drakheim",title:"Hydrophobe",desc:"Pendant le combat contre Chilgar, le joueur ne doit se prendre aucune vague / pilier / tornade.",points:10,hard:false,personal:true},
+  {id:47,dungeon:"Saccage de Drakheim",title:"De feu et de glace",desc:"Le groupe doit vaincre Isilagour & Eldsupptok à 10sec d'intervalle.",points:10,hard:false,personal:false},
+  {id:48,dungeon:"Saccage de Drakheim",title:"Jamais 203",desc:"Le groupe doit vaincre Isilagour & Eldsupptok & Fodir Kaldur à 10sec d'intervalle.",points:20,hard:true,personal:false},
 ];
 
 const DUNGEONS_ORDER = [
@@ -556,17 +619,27 @@ function renderLeaderboard(scores) {
     const rankClass = i < 3 ? `rank-${i+1}` : '';
     const rankLabel = i < 3 ? `<span style="font-style:italic;font-size:11px">${rankIcons[i]}</span>` : `<span style="font-size:12px">${i+1}</span>`;
 
-    // Dungeon detail
-    let detailHtml = '<div class="lb-detail"><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 20px">';
+    // Detail: tous les HF par donjon, avec état
+    let detailHtml = '<div class="lb-detail"><div style="display:grid;grid-template-columns:1fr 1fr;gap:0 28px">';
     DUNGEONS_ORDER.forEach(d => {
       const dHFs = ACHIEVEMENTS.filter(a => a.dungeon === d);
       const dDone = dHFs.filter(a => s.done.has(a.id)).length;
       const complete = dDone === dHFs.length;
-      const pct = Math.round(dDone / dHFs.length * 100);
-      detailHtml += `<div class="dungeon-progress">
-        <div class="dp-header"><span class="dp-name">${d}</span><span class="dp-count">${dDone}/${dHFs.length}${complete ? ' +5pts' : ''}</span></div>
-        <div class="dp-bar-bg"><div class="dp-bar-fill ${complete ? 'complete' : ''}" style="width:${pct}%"></div></div>
-      </div>`;
+      detailHtml += `<div class="dungeon-section">
+        <div class="dp-header">
+          <span class="dp-name">${d}</span>
+          <span class="dp-count ${complete ? 'complete' : ''}">${dDone}/${dHFs.length}${complete ? ' · +5pts' : ''}</span>
+        </div>
+        <div class="hf-list">`;
+      dHFs.forEach(a => {
+        const done = s.done.has(a.id);
+        detailHtml += `<div class="hf-item ${done ? 'done' : ''}">
+          <div class="hf-check-icon">${done ? '✓' : ''}</div>
+          <span class="hf-item-name">${a.title}${a.hard ? ' ⭐' : ''}${a.personal ? ' 👤' : ''}</span>
+          <span class="hf-item-pts">${done ? '+' + a.points : a.points} pts</span>
+        </div>`;
+      });
+      detailHtml += '</div></div>';
     });
     detailHtml += '</div></div>';
 
@@ -582,9 +655,6 @@ function renderLeaderboard(scores) {
   });
 
   document.getElementById('lb-content').innerHTML = html;
-  // Auto-refresh toutes les 30s
-  clearTimeout(window._lbTimer);
-  window._lbTimer = setTimeout(loadLeaderboard, 30000);
 }
 
 // ---- ACHIEVEMENTS LIST ----
@@ -597,7 +667,7 @@ function renderAchievements() {
       <div class="dungeon-title">${d} <span class="bonus-tag">+5 pts si complet</span> <span style="margin-left:auto;font-size:11px;color:var(--text-dim)">${maxPts} pts max</span></div>
       <div class="hf-grid">`;
     hfs.forEach(a => {
-      html += `<div class="hf-card">
+      html += `<div class="hf-card" onclick="this.classList.toggle('open')">
         <div class="hf-card-header">
           <span class="hf-card-title">${a.title}</span>
           <div class="hf-badges">
@@ -606,6 +676,7 @@ function renderAchievements() {
             <span class="badge badge-pts">${a.points} pts</span>
           </div>
         </div>
+        <div class="hf-card-desc">${a.desc}</div>
       </div>`;
     });
     html += '</div></div>';
