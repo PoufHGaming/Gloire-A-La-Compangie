@@ -194,13 +194,33 @@
   .hf-item.done .hf-item-pts { color: var(--teal); }
 
   /* ACHIEVEMENTS PAGE */
-  .dungeon-block { margin-bottom: 28px; }
+  .dungeon-block {
+    margin-bottom: 28px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    position: relative;
+  }
+  .dungeon-bg {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    opacity: 0.18;
+    z-index: 0;
+    border-radius: 8px;
+  }
+  .dungeon-inner {
+    position: relative;
+    z-index: 1;
+    padding: 16px 16px 16px 16px;
+  }
   .dungeon-title {
     font-family: 'Cinzel', serif;
     font-size: 13px;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--gold-dim);
+    color: var(--gold);
     padding-bottom: 10px;
     border-bottom: 1px solid var(--border);
     margin-bottom: 12px;
@@ -406,13 +426,13 @@
   <div class="event-subtitle">Du 21/04 au 17/05 &nbsp;·&nbsp; Classement en direct</div>
   <div class="event-subtitle">Organisé par Pouf</div>
   <div class="social-links">
-    <a href="https://www.twitch.tv/pouf_hgaming" target="_blank" rel="noopener" class="social-link twitch">
+    <a href="https://www.twitch.tv/REMPLACE_TON_PSEUDO" target="_blank" rel="noopener" class="social-link twitch">
       <svg class="social-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
         <path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714z"/>
       </svg>
       Twitch
     </a>
-    <a href="https://discord.gg/3WH65QCARa" target="_blank" rel="noopener" class="social-link discord">
+    <a href="https://discord.gg/REMPLACE_TON_LIEN" target="_blank" rel="noopener" class="social-link discord">
       <svg class="social-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
         <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057.1 18.08.11 18.1.132 18.115a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
       </svg>
@@ -658,14 +678,34 @@ function renderLeaderboard(scores) {
 }
 
 // ---- ACHIEVEMENTS LIST ----
+const DUNGEON_IMAGES = {
+  "Abime des marins":       "images/abime-des-marins.jpg",
+  "Bois de L'aube":         "images/bois-de-laube.jpg",
+  "Carrière tombe-dieu":    "images/carriere-tombe-dieu.jpg",
+  "Caveau de Lamespectre":  "images/caveau-de-lamespectre.jpg",
+  "Coeur de guivre":        "images/coeur-de-guivre.jpg",
+  "Coeur de Tuzari":        "images/coeur-de-tuzari.jpg",
+  "Creux Soyeux":           "images/creux-soyeux.jpg",
+  "Guet Tempete":           "images/guet-tempete.jpg",
+  "La chute Cithrel":       "images/la-chute-cithrel.jpg",
+  "Marché d'Urrak":         "images/marche-durrak.jpg",
+  "Sables Empyréens":       "images/sables-empyreens.jpg",
+  "Saccage de Drakheim":    "images/saccage-de-drakheim.jpg",
+};
+
 function renderAchievements() {
   let html = '';
   DUNGEONS_ORDER.forEach(d => {
     const hfs = ACHIEVEMENTS.filter(a => a.dungeon === d);
     const maxPts = hfs.reduce((s, a) => s + a.points, 0) + 5;
+    const imgPath = DUNGEON_IMAGES[d] || '';
+    const bgStyle = imgPath ? `background-image: url('${imgPath}');` : '';
+
     html += `<div class="dungeon-block">
-      <div class="dungeon-title">${d} <span class="bonus-tag">+5 pts si complet</span> <span style="margin-left:auto;font-size:11px;color:var(--text-dim)">${maxPts} pts max</span></div>
-      <div class="hf-grid">`;
+      <div class="dungeon-bg" style="${bgStyle}"></div>
+      <div class="dungeon-inner">
+        <div class="dungeon-title">${d} <span class="bonus-tag">+5 pts si complet</span> <span style="margin-left:auto;font-size:11px;color:var(--text-dim)">${maxPts} pts max</span></div>
+        <div class="hf-grid">`;
     hfs.forEach(a => {
       html += `<div class="hf-card" onclick="this.classList.toggle('open')">
         <div class="hf-card-header">
@@ -679,7 +719,7 @@ function renderAchievements() {
         <div class="hf-card-desc">${a.desc}</div>
       </div>`;
     });
-    html += '</div></div>';
+    html += `</div></div></div>`;
   });
   document.getElementById('ach-content').innerHTML = html;
 }
