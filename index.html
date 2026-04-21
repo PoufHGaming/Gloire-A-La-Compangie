@@ -387,76 +387,6 @@
   }
   .save-indicator.show { opacity: 1; }
 
-  /* FOOTER */
-  footer {
-    margin-top: 80px;
-    border-top: 1px solid var(--border);
-    position: relative;
-  }
-  footer::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0; height: 2px;
-    background: linear-gradient(90deg, transparent, var(--gold), transparent);
-  }
-  .footer-inner { padding: 36px 0 44px; text-align: center; }
-  .footer-label {
-    font-family: 'Cinzel', serif;
-    font-size: 10px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--gold-dim);
-    margin-bottom: 24px;
-  }
-  .heroes-track-wrapper {
-    overflow: hidden;
-    width: 100%;
-    mask-image: linear-gradient(90deg, transparent 0%, black 6%, black 94%, transparent 100%);
-    -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 6%, black 94%, transparent 100%);
-  }
-  .heroes-track {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    width: max-content;
-    padding: 6px 0;
-    animation: scroll-heroes 40s linear infinite;
-  }
-  .heroes-track:hover { animation-play-state: paused; }
-  @keyframes scroll-heroes {
-    0%   { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
-  }
-  .hero-portrait {
-    width: 52px;
-    height: 52px;
-    border-radius: 50%;
-    flex-shrink: 0;
-    overflow: hidden;
-    border: 1.5px solid var(--border);
-    background: #000;
-    transition: border-color 0.25s, transform 0.25s;
-  }
-  .hero-portrait:hover { border-color: var(--gold); transform: scale(1.15); }
-  .hero-portrait img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .hero-fallback {
-    width: 100%; height: 100%;
-    display: flex; align-items: center; justify-content: center;
-    font-family: 'Cinzel', serif; font-size: 16px; font-weight: 700;
-    color: var(--gold-dim);
-  }
-  .footer-title {
-    font-family: 'Cinzel', serif;
-    font-size: 14px; font-weight: 700;
-    color: rgba(201,168,76,0.1);
-    letter-spacing: 0.35em; text-transform: uppercase;
-    margin-top: 24px;
-  }
-  .footer-credits {
-    margin-top: 10px; font-size: 12px;
-    color: var(--text-dim); opacity: 0.4; letter-spacing: 0.1em;
-  }
-
   /* TOAST */
   .toast {
     position: fixed;
@@ -530,17 +460,6 @@
   </div>
 
 </main>
-
-<footer>
-  <div class="footer-inner">
-    <div class="footer-label">Les héros de la Compagnie</div>
-    <div class="heroes-track-wrapper">
-      <div class="heroes-track" id="heroes-track"></div>
-    </div>
-    <div class="footer-title">Gloire à la Compagnie I</div>
-    <div class="footer-credits">Du 21 avril au 17 mai &nbsp;·&nbsp; Organisé par Pouf &nbsp;·&nbsp; Fellowship</div>
-  </div>
-</footer>
 
 <div class="toast" id="toast"></div>
 
@@ -907,24 +826,6 @@ async function toggleHF(achievementId, el) {
   }
   el.style.pointerEvents = '';
 }
-
-// ---- FOOTER HEROES ----
-const HEROES = [
-  'Aeona','Ardeos','Elarion','Helena','Mara',
-  'Meiko','Rime','Sylvie','Tariq','Vigour','Xavian',
-];
-
-function buildHeroesTrack() {
-  const track = document.getElementById('heroes-track');
-  const doubled = [...HEROES, ...HEROES];
-  track.innerHTML = doubled.map(name => {
-    const img = `images/heroes/${name.toLowerCase()}.png`;
-    return `<div class="hero-portrait" title="${name}">
-      <img src="${img}" alt="${name}" onerror="this.parentNode.innerHTML='<div class=hero-fallback>${name.slice(0,2).toUpperCase()}</div>'">
-    </div>`;
-  }).join('');
-}
-buildHeroesTrack();
 
 // ---- INIT ----
 loadLeaderboard();
