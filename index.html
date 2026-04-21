@@ -387,7 +387,106 @@
   }
   .save-indicator.show { opacity: 1; }
 
-  /* TOAST */
+  /* FOOTER */
+  footer {
+    margin-top: 80px;
+    border-top: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  footer::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+  .footer-inner {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 40px 24px 48px;
+    text-align: center;
+  }
+  .footer-label {
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold-dim);
+    margin-bottom: 28px;
+  }
+  .heroes-track-wrapper {
+    overflow: hidden;
+    width: 100%;
+    mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%);
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%);
+  }
+  .heroes-track {
+    display: flex;
+    gap: 20px;
+    width: max-content;
+    animation: scroll-heroes 35s linear infinite;
+  }
+  .heroes-track:hover { animation-play-state: paused; }
+  @keyframes scroll-heroes {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  .hero-portrait {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border);
+    background: var(--bg2);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    transition: border-color 0.3s, transform 0.3s;
+    position: relative;
+  }
+  .hero-portrait:hover {
+    border-color: var(--gold);
+    transform: scale(1.1);
+  }
+  .hero-portrait img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+  .hero-portrait .hero-initials {
+    font-family: 'Cinzel', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--gold-dim);
+  }
+  .hero-portrait .hero-ring {
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    border: 1px solid transparent;
+    transition: border-color 0.3s;
+  }
+  .hero-portrait:hover .hero-ring { border-color: rgba(201,168,76,0.3); }
+  .footer-credits {
+    margin-top: 32px;
+    font-size: 12px;
+    color: var(--text-dim);
+    opacity: 0.5;
+    letter-spacing: 0.08em;
+  }
+  .footer-event-name {
+    font-family: 'Cinzel', serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: rgba(201,168,76,0.15);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-top: 24px;
+  }
+
+
   .toast {
     position: fixed;
     bottom: 24px;
@@ -460,6 +559,18 @@
   </div>
 
 </main>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-label">Les héros de la Compagnie</div>
+    <div class="heroes-track-wrapper">
+      <div class="heroes-track" id="heroes-track">
+      </div>
+    </div>
+    <div class="footer-event-name">Gloire à la Compagnie I</div>
+    <div class="footer-credits">Du 21 avril au 17 mai &nbsp;·&nbsp; Organisé par Pouf &nbsp;·&nbsp; Fellowship</div>
+  </div>
+</footer>
 
 <div class="toast" id="toast"></div>
 
@@ -826,6 +937,37 @@ async function toggleHF(achievementId, el) {
   }
   el.style.pointerEvents = '';
 }
+
+// ---- FOOTER HEROES ----
+const HEROES = [
+  { name: 'Helena',   img: 'images/heroes/helena.png' },
+  { name: 'Meiko',    img: 'images/heroes/meiko.png' },
+  { name: 'Sylvie',   img: 'images/heroes/sylvie.png' },
+  { name: 'Vigour',   img: 'images/heroes/vigour.png' },
+  { name: 'Aeona',    img: 'images/heroes/aeona.png' },
+  { name: 'Ardeos',   img: 'images/heroes/ardeos.png' },
+  { name: 'Elarion',  img: 'images/heroes/elarion.png' },
+  { name: 'Mara',     img: 'images/heroes/mara.png' },
+  { name: 'Rime',     img: 'images/heroes/rime.png' },
+  { name: 'Tariq',    img: 'images/heroes/tariq.png' },
+  { name: 'Xavian',   img: 'images/heroes/xavian.png' },
+];
+
+function buildHeroesTrack() {
+  const track = document.getElementById('heroes-track');
+  const doubled = [...HEROES, ...HEROES];
+  track.innerHTML = doubled.map(h => {
+    const initials = h.name.slice(0,2).toUpperCase();
+    const hue = (h.name.charCodeAt(0) * 37 + h.name.charCodeAt(1) * 13) % 360;
+    return `<div class="hero-portrait" title="${h.name}">
+      <div class="hero-ring"></div>
+      <img src="${h.img}" alt="${h.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <span class="hero-initials" style="display:none;color:hsl(${hue},40%,55%)">${initials}</span>
+    </div>`;
+  }).join('');
+}
+
+buildHeroesTrack();
 
 // ---- INIT ----
 loadLeaderboard();
