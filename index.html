@@ -439,7 +439,7 @@
 <body>
 
 <header>
-  <div class="event-title">Gloire à la Compagnie I</div>
+  <div class="event-title" id="event-title">Gloire à la Compagnie I</div>
   <div class="event-subtitle" id="header-subtitle">Du 21/04 au 17/05 &nbsp;·&nbsp; Classement en direct</div>
   <div class="event-subtitle" id="header-organiser">Organisé par Pouf</div>
   <div class="social-links">
@@ -885,6 +885,7 @@ function renderBadges(a) {
 // Remplis les valeurs EN ci-dessous. Les FR sont les textes par défaut.
 const TRANSLATIONS = {
   'nav.help': { fr: 'Aide ?', en: 'Help ?' },
+  'header.event-title': { fr: 'Gloire à la Compagnie I', en: 'Glory to the Fellowship I' },
   'nav.joiningform': { fr: 'Rejoindre l\'événement', en: 'Join the event' },
   'nav.feedbackform': { fr: 'Donner votre avis', en: 'Provide feedback' },
   'nav.leaderboard':   { fr: 'Classement',  en: 'Leaderboard' },
@@ -986,6 +987,7 @@ function applyLangToStaticElements() {
   document.getElementById('header-organiser').textContent = t('header.organiser');
   document.getElementById('tab-leaderboard').textContent = t('nav.leaderboard');
   document.getElementById('help-btn').textContent = t('nav.help');
+  document.getElementById('event-title').textContent = t('header.event-title');
   document.getElementById('joiningform').textContent = t('nav.joiningform');
   document.getElementById('feedbackform').textContent = t('nav.feedbackform');
   document.getElementById('tab-achievements').textContent = t('nav.achievements');
