@@ -408,6 +408,21 @@
   .toast.show { opacity: 1; transform: translateY(0); }
   .toast.error { border-color: var(--red); color: var(--red); }
 
+  .help-link {
+  display: block;
+  padding: 8px 10px;
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 14px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.help-link:hover {
+  background: var(--bg3);
+  color: var(--text);
+}
+
   /* LOADING */
   .loading { text-align: center; padding: 48px; color: var(--text-dim); font-style: italic; }
 
@@ -446,7 +461,29 @@
 <nav>
   <button class="tab active" id="tab-leaderboard" onclick="showPage('leaderboard', this)">Classement</button>
   <button class="tab" id="tab-achievements" onclick="showPage('achievements', this)">Hauts-faits</button>
-  <button class="tab" id="lang-btn" onclick="toggleLang()" style="margin-left:auto;opacity:0.6">FR</button>
+<div style="margin-left:auto; display:flex; align-items:center; gap:10px; position:relative;">
+
+  <button class="tab" id="lang-btn" onclick="toggleLang()" style="opacity:0.6">FR</button>
+
+<button class="tab" id="help-btn" onclick="toggleHelpMenu()" style="opacity:0.6"></button>
+
+  <div id="help-menu" style="
+    display:none;
+    position:absolute;
+    top:40px;
+    right:0;
+    background:var(--bg2);
+    border:1px solid var(--border);
+    border-radius:6px;
+    padding:10px;
+    min-width:200px;
+    z-index:10;
+  ">
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLSc1t3Eol7FKP1efLmgBTiJSQ43mjIdSqltBys6Egv-3W-Hfzw/viewform?usp=header" target="_blank" id="joiningform" class="help-link">Join the event</a>
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLSfKiGWA_6jCTaeZVyJ_9nsNibcy2WK0u9KLaPEh1nxNZSgNtA/viewform?usp=header" target="_blank" id="feedbackform" class="help-link">Submit feedback</a>
+  </div>
+
+</div>
 </nav>
 
 <main>
@@ -847,6 +884,9 @@ function renderBadges(a) {
 // ---- TRADUCTIONS ----
 // Remplis les valeurs EN ci-dessous. Les FR sont les textes par défaut.
 const TRANSLATIONS = {
+  'nav.help': { fr: 'Aide ?', en: 'Help ?' },
+  'nav.joiningform': { fr: 'Rejoindre l\'événement', en: 'Join the event' },
+  'nav.feedbackform': { fr: 'Donner votre avis', en: 'Provide feedback' },
   'nav.leaderboard':   { fr: 'Classement',  en: 'Leaderboard' },
   'nav.achievements':  { fr: 'Hauts-faits', en: 'Achievements' },
   'header.subtitle':   { fr: 'Du 21/04 au 17/05 · Classement en direct', en: 'Apr 21 – May 17 · Live rankings' },
@@ -945,6 +985,9 @@ function applyLangToStaticElements() {
   document.getElementById('header-subtitle').innerHTML = t('header.subtitle');
   document.getElementById('header-organiser').textContent = t('header.organiser');
   document.getElementById('tab-leaderboard').textContent = t('nav.leaderboard');
+  document.getElementById('help-btn').textContent = t('nav.help');
+  document.getElementById('joiningform').textContent = t('nav.joiningform');
+  document.getElementById('feedbackform').textContent = t('nav.feedbackform');
   document.getElementById('tab-achievements').textContent = t('nav.achievements');
   document.getElementById('lang-btn').textContent = currentLang.toUpperCase();
   document.documentElement.lang = currentLang;
@@ -956,6 +999,21 @@ function toggleLang() {
   renderAchievements();
   if (lbData) renderLeaderboard(lbData);
 }
+
+function toggleHelpMenu() {
+  const menu = document.getElementById('help-menu');
+  menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+}
+
+// Fermer si clic ailleurs
+document.addEventListener('click', function(e) {
+  const menu = document.getElementById('help-menu');
+  const btn = document.getElementById('help-btn');
+
+  if (!menu.contains(e.target) && e.target !== btn) {
+    menu.style.display = 'none';
+  }
+});
 
 // ---- INIT ----
 applyLangToStaticElements();
