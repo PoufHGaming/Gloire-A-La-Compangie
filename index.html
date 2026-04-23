@@ -423,6 +423,39 @@
   color: var(--text);
 }
 
+  /* RULES PAGE */
+  .rules-page { max-width: 680px; margin: 0 auto; }
+  .rules-section { margin-bottom: 32px; }
+  .rules-section-title {
+    font-family: 'Cinzel', serif;
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold-dim);
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 14px;
+  }
+  .rules-list { display: flex; flex-direction: column; gap: 8px; }
+  .rules-item {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 12px 16px;
+    background: var(--bg2);
+    border-radius: 6px;
+    border-left: 2px solid var(--border);
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--text);
+  }
+  .rules-item.highlight { border-left-color: var(--gold); background: rgba(201,168,76,0.05); }
+  .rules-item.info { border-left-color: var(--teal); }
+  .rules-icon { flex-shrink: 0; width: 18px; height: 18px; margin-top: 3px; opacity: 0.8; }
+  .rules-icon img { width: 100%; height: 100%; object-fit: contain; }
+  .rules-conditions { display: flex; gap: 5px; flex-shrink: 0; margin-top: 3px; }
+  .rules-conditions img { width: 18px; height: 18px; object-fit: contain; opacity: 0.8; }
+
   /* LOADING */
   .loading { text-align: center; padding: 48px; color: var(--text-dim); font-style: italic; }
 
@@ -461,6 +494,7 @@
 <nav>
   <button class="tab active" id="tab-leaderboard" onclick="showPage('leaderboard', this)">Classement</button>
   <button class="tab" id="tab-achievements" onclick="showPage('achievements', this)">Hauts-faits</button>
+  <button class="tab" id="tab-rules" onclick="showPage('rules', this)">Règles</button>
 <div style="margin-left:auto; display:flex; align-items:center; gap:10px; position:relative;">
 
   <button class="tab" id="lang-btn" onclick="toggleLang()" style="opacity:0.6">FR</button>
@@ -496,6 +530,11 @@
   <!-- ACHIEVEMENTS LIST -->
   <div id="page-achievements" class="page">
     <div id="ach-content" class="loading">Chargement...</div>
+  </div>
+
+  <!-- RULES -->
+  <div id="page-rules" class="page">
+    <div class="rules-page" id="rules-content"></div>
   </div>
 
 </main>
@@ -890,6 +929,20 @@ const TRANSLATIONS = {
   'nav.feedbackform': { fr: 'Donner votre avis', en: 'Provide feedback' },
   'nav.leaderboard':   { fr: 'Classement',  en: 'Leaderboard' },
   'nav.achievements':  { fr: 'Hauts-faits', en: 'Achievements' },
+  'nav.rules':         { fr: 'Règles',      en: 'Rules' },
+  // ---- Règles ----
+  'rules.section.gear':    { fr: 'Équipement autorisé', en: 'Allowed gear' },
+  'rules.section.gear_example': { fr: 'Exemple de stuff', en: 'Gear example' },
+  'rules.section.hf':      { fr: 'Hauts-faits',         en: 'Achievements' },
+  'rules.section.valid':   { fr: 'Validation',           en: 'Validation' },
+  'rules.section.dungeon': { fr: 'Donjons',              en: 'Dungeons' },
+  'rules.gear.1':    { fr: '270 ilvl, sans gemmes, avec 1 légendaire (~274 ilvl effectif)', en: '270 ilvl, no gems, with 1 legendary (~274 effective ilvl)' },
+  'rules.gear.2':    { fr: 'Arme 270 uniquement', en: 'Weapon 270 only' },
+  'rules.hf.1':      { fr: "Les hauts-faits marqués du logo solo sont personnels : ils n'ont pas besoin d'être validés par tous les membres du groupe, ils sont liés au joueur individuellement.", en: "Achievements marked with the solo icon are personal: they don't need to be validated by all group members — they are linked to the individual player." },
+  'rules.hf.2':      { fr: "Les logos de condition (portail interdit, dispell interdit, poulet interdit…) indiquent les reliques ou capacités bannies pour ce haut-fait.", en: 'Condition icons (portal forbidden, dispell forbidden, chicken forbidden…) indicate the relics or abilities banned for that achievement.' },
+  'rules.valid.1':   { fr: "Pas de logs obligatoires pendant la complétion. Jouez le jeu honnêtement, c'est tout ce qu'on demande.", en: "No logs required during completion. Play honestly — that's all we ask." },
+  'rules.valid.2':   { fr: "Pour valider un haut-fait, envoyez un MP à Pouf ou postez un message sur le Discord avec le nom des challenges accomplis. Le score sera mis à jour en conséquence.", en: 'To validate an achievement, send a DM to Pouf or post a message on Discord with the completed challenge names. The score will be updated accordingly.' },
+  'rules.dungeon.1': { fr: 'Les donjons sont à faire uniquement entre Eternal 5 & Eternal 8.', en: 'Dungeons must be completed between Eternal 5 & Eternal 8 only.' },
   'header.subtitle':   { fr: 'Du 21/04 au 17/05 · Classement en direct', en: 'Apr 21 – May 17 · Live rankings' },
   'header.organiser':  { fr: 'Organisé par Pouf', en: 'Hosted by Pouf' },
   'lb.col.player':     { fr: 'Joueur',  en: 'Player' },
@@ -986,11 +1039,12 @@ function applyLangToStaticElements() {
   document.getElementById('header-subtitle').innerHTML = t('header.subtitle');
   document.getElementById('header-organiser').textContent = t('header.organiser');
   document.getElementById('tab-leaderboard').textContent = t('nav.leaderboard');
+  document.getElementById('tab-achievements').textContent = t('nav.achievements');
+  document.getElementById('tab-rules').textContent = t('nav.rules');
   document.getElementById('help-btn').textContent = t('nav.help');
   document.getElementById('event-title').textContent = t('header.event-title');
   document.getElementById('joiningform').textContent = t('nav.joiningform');
   document.getElementById('feedbackform').textContent = t('nav.feedbackform');
-  document.getElementById('tab-achievements').textContent = t('nav.achievements');
   document.getElementById('lang-btn').textContent = currentLang.toUpperCase();
   document.documentElement.lang = currentLang;
 }
@@ -1000,6 +1054,7 @@ function toggleLang() {
   applyLangToStaticElements();
   renderAchievements();
   if (lbData) renderLeaderboard(lbData);
+  if (document.getElementById('page-rules').classList.contains('active')) renderRules();
 }
 
 function toggleHelpMenu() {
@@ -1011,11 +1066,71 @@ function toggleHelpMenu() {
 document.addEventListener('click', function(e) {
   const menu = document.getElementById('help-menu');
   const btn = document.getElementById('help-btn');
-
   if (!menu.contains(e.target) && e.target !== btn) {
     menu.style.display = 'none';
   }
 });
+
+// ---- RULES ----
+function renderRules() {
+  document.getElementById('rules-content').innerHTML = `
+    <div class="rules-section">
+      <div class="rules-section-title">${t('rules.section.gear')}</div>
+      <div class="rules-list">
+        <div class="rules-item highlight">⚔️&nbsp; ${t('rules.gear.1')}</div>
+        <div class="rules-item highlight">🗡️&nbsp; ${t('rules.gear.2')}</div>
+      </div>
+      <div style="margin-top:14px">
+        <div class="rules-section-title" style="margin-bottom:12px">${t('rules.section.gear_example')}</div>
+        <img
+          src="images/stuff-example.png"
+          alt="Exemple de stuff autorisé"
+          style="max-width:320px;width:100%;border-radius:6px;border:1px solid var(--border);display:block;margin:0 auto;"
+        >
+      </div>
+    </div>
+
+    <div class="rules-section">
+      <div class="rules-section-title">${t('rules.section.hf')}</div>
+      <div class="rules-list">
+              <div class="rules-item" style="border-left-color:#89070e;background:rgba(137,7,14,0.08);">
+          🏰&nbsp; ${t('rules.dungeon.1')}
+        </div>
+        <div class="rules-item info">
+          <div class="rules-icon"><img src="images/badges/solo.png" alt="solo"></div>
+          <span>${t('rules.hf.1')}</span>
+        </div>
+        <div class="rules-item">
+          <div class="rules-conditions">
+            <img src="images/conditions/portal.png" alt="portal">
+            <img src="images/conditions/shadow.png" alt="shadow">
+            <img src="images/conditions/dispell.png" alt="dispell">
+            <img src="images/conditions/poulet.png" alt="poulet">
+          </div>
+          <span>${t('rules.hf.2')}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="rules-section">
+      <div class="rules-section-title">${t('rules.section.valid')}</div>
+      <div class="rules-list">
+        <div class="rules-item">📋&nbsp; ${t('rules.valid.1')}</div>
+        <div class="rules-item">💬&nbsp; ${t('rules.valid.2')}</div>
+      </div>
+    </div>
+  `;
+}
+
+function showPage(id, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  btn.classList.add('active');
+  if (id === 'leaderboard') loadLeaderboard();
+  if (id === 'achievements') renderAchievements();
+  if (id === 'rules') renderRules();
+}
 
 // ---- INIT ----
 applyLangToStaticElements();
