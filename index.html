@@ -760,7 +760,7 @@ function renderLeaderboard(scores) {
     <div>${t('lb.col.player')}</div>
     <div class="col-base" style="text-align:right">${t('lb.col.base')}</div>
     <div class="col-bonus" style="text-align:right">${t('lb.col.bonus')}</div>
-    <div style="text-align:right">${t('lb.col.hf')}</div>
+    <div class="col-hf" style="text-align:right">${t('lb.col.hf')}</div>
     <div style="text-align:right">${t('lb.col.total')}</div>
   </div>`;
 
@@ -798,7 +798,7 @@ function renderLeaderboard(scores) {
       <div class="player-name">${s.name}</div>
       <div class="score-base col-base">${s.base}</div>
       <div class="score-bonus col-bonus">${s.bonus > 0 ? '+'+s.bonus : '—'}</div>
-      <div class="hf-count">${s.hf_count}</div>
+      <div class="hf-count col-hf">${s.hf_count}</div>
       <div class="score-total">${s.total}</div>
       ${detailHtml}
     </div>`;
