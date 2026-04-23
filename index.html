@@ -459,13 +459,61 @@
   /* LOADING */
   .loading { text-align: center; padding: 48px; color: var(--text-dim); font-style: italic; }
 
-  /* RESPONSIVE */
-  @media (max-width: 600px) {
-    .lb-header, .lb-row {
-      grid-template-columns: 32px 1fr 60px 60px;
+  /* RESPONSIVE MOBILE */
+  @media (max-width: 640px) {
+
+    /* Header compact */
+    header { padding: 24px 16px 20px; }
+    .event-title { font-size: clamp(18px, 6vw, 28px); }
+    .event-subtitle { font-size: 12px; margin-top: 4px; }
+    .social-links { gap: 8px; margin-top: 12px; }
+    .social-link { padding: 5px 10px; font-size: 11px; }
+
+    /* Nav : wrap en 2 lignes propres */
+    nav {
+      padding: 10px 12px;
+      flex-wrap: wrap;
+      gap: 4px;
+      justify-content: flex-start;
     }
-    .lb-header .col-base, .lb-header .col-bonus,
-    .lb-row .score-base, .lb-row .score-bonus { display: none; }
+    .tab {
+      font-size: 11px;
+      padding: 6px 12px;
+      letter-spacing: 0.08em;
+    }
+    /* Le groupe lang+aide reste à droite sur la même ligne */
+    nav > div { margin-left: auto; }
+
+    /* Main padding réduit */
+    main { padding: 16px 12px 48px; }
+
+    /* Leaderboard : 3 colonnes sur mobile (rang + nom + total) */
+    .lb-header, .lb-row {
+      grid-template-columns: 32px 1fr 52px;
+      gap: 8px;
+      padding: 10px 10px;
+    }
+    .lb-header .col-base, .lb-header .col-bonus, .lb-header .col-hf,
+    .lb-row .score-base, .lb-row .score-bonus, .lb-row .hf-count { display: none; }
+    .lb-header { font-size: 11px; }
+    .player-name { font-size: 15px; }
+    .score-total { font-size: 16px; }
+
+    /* Détail joueur : 1 colonne au lieu de 2 */
+    .lb-detail { padding: 12px 8px 16px 8px; }
+    .lb-detail > div { grid-template-columns: 1fr !important; gap: 0 !important; }
+    .dungeon-section { margin-bottom: 10px; }
+
+    /* Hauts-faits : 1 colonne */
+    .hf-grid { grid-template-columns: 1fr; }
+    .dungeon-title { font-size: 13px; flex-wrap: wrap; }
+    .hf-card { font-size: 14px; }
+    .hf-card-title { font-size: 14px; }
+    .hf-card-desc { font-size: 14px; }
+
+    /* Règles */
+    .rules-page { padding: 0; }
+    .rules-item { font-size: 14px; padding: 10px 12px; }
   }
 </style>
 </head>
