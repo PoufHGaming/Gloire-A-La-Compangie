@@ -628,8 +628,8 @@ const ACHIEVEMENTS = [
   {id:23,dungeon:"Coeur de Tuzari",       title:"Mauvaise graine",                      title_en:"Bad Seed",                          desc:"Pendant le combat contre Vun'Kahr, aucune plante ne doit apparaître (marcher sur TOUTES les plantes).",                                                                                                                                                                                                                                                                       desc_en:"During the fight against Vun'Kahr, no plant should appear (step on ALL plants).",                                                                                                                                                                                   points:10, hard:false, personal:false, conditions:[]},
   {id:24,dungeon:"Coeur de Tuzari",       title:"Balo'Tuzari",                          title_en:"TuzBall",                           desc:"Aucun membre du groupe AINSI que Moar'gore ne doit se prendre une orbe.",                                                                                                                                                                                                                                                                                                      desc_en:"No member of the group AND Moar'gore should take an orb.",                                                                                                                                                                                                          points:20, hard:true,  personal:false, conditions:[]},
   {id:25,dungeon:"Creux Soyeux",          title:"Progéniture",                          title_en:"Offspring",                         desc:"Aucun membre du groupe ne doit tuer d'araignée pendant le combat contre Vexira (exceptée Vexira évidemment). NO SNAP",                                                                                                                                                                                                                                               desc_en:"No member of the group should kill any spiders during the fight against Vexira (except Vexira, obviously). NO SNAP",                                                                                                                                                         points:10, hard:false, personal:false, conditions:['poulet']},
-  {id:26,dungeon:"Creux Soyeux",          title:"Insecticide",                          title_en:"Insecticide",                       desc:"Le groupe doit vaincre toutes les horreurs (Araignée Orange) dans le donjon et lancer le combat contre Vexira avant la fin du timer",                                                                                                                                                                                                                                         desc_en:"The group must defeat all Carrion Horror in the dungeon and engage boss fight within timer.",                                                                                                                                                                                             points:20, hard:true, personal:false, conditions:[]},
-  {id:27,dungeon:"Creux Soyeux",          title:"Cent Dix Pelles",                      title_en:"No-Spell Dispel",                   desc:"Compléter le donjon sans qu'aucun membre du groupe n'ai utilisé un seul dispel.",                                                                                                                                                                                                                                                                                             desc_en:"Complete the dungeon without any party member using a single dispel",                                                                                                                                                                                                                       points:20, hard:false,  personal:false, conditions:['dispell']},
+  {id:26,dungeon:"Creux Soyeux",          title:"Cent Dix Pelles",                      title_en:"No-Spell Dispel",                   desc:"Compléter le donjon sans qu'aucun membre du groupe n'ai utilisé un seul dispel.",                                                                                                                                                                                                                                                                                             desc_en:"Complete the dungeon without any party member using a single dispel",                                                                                                                                                                                                                       points:10, hard:false,  personal:false, conditions:['dispell']},
+  {id:27,dungeon:"Creux Soyeux",          title:"Insecticide",                          title_en:"Insecticide",                       desc:"Le groupe doit vaincre toutes les horreurs (Araignée Orange) dans le donjon et lancer le combat contre Vexira avant la fin du timer",                                                                                                                                                                                                                                         desc_en:"The group must defeat all Carrion Horror in the dungeon and engage boss fight within timer.",                                                                                                                                                                                             points:20, hard:true, personal:false, conditions:[]},
   {id:28,dungeon:"Guet Tempete",          title:"Grappin",                              title_en:"Grappling Hook",                    desc:"Le groupe doit tuer Brogg alors qu'au moins 2 Mancatcher (ceux invoqués par le boss) sont encore en vie.",                                                                                                                                                                                                                                                                    desc_en:"The group must kill Brogg while at least 2 Mancatchers (summoned by the boss) are still alive.",                                                                                                                                                                                           points:10, hard:false, personal:false, conditions:[]},
   {id:29,dungeon:"Guet Tempete",          title:"Enragé",                               title_en:"Enraged",                           desc:"Le groupe doit vaincre un pillard qui a atteint 20 stacks.",                                                                                                                                                                                                                                                                                                                  desc_en:"The group must defeat a pillager who has reached 20 stacks.",                                                                                                                                                                                                       points:10, hard:false, personal:false, conditions:[]},
   {id:30,dungeon:"Guet Tempete",          title:"World Boss",                           title_en:"World Boss",                        desc:"Le groupe doit vaincre un pillard qui a atteint 35 stacks.",                                                                                                                                                                                                                                                                                                                  desc_en:"The group must defeat a pillager who has reached 35 stacks.",                                                                                                                                                                                                       points:20, hard:true,  personal:false, conditions:[]},
@@ -767,9 +767,36 @@ function renderLeaderboard(scores) {
     <div style="text-align:right">${t('lb.col.total')}</div>
   </div>`;
 
+  // Calcul du rang avec égalités (dense ranking sauf pour les joueurs à 0)
+  let displayRank = 1;
   scores.forEach((s, i) => {
-    const rankClass = i < 3 ? `rank-${i+1}` : '';
-    const rankLabel = i < 3 ? `<span style="font-style:italic;font-size:11px">${rankIcons[i]}</span>` : `<span style="font-size:12px">${i+1}</span>`;
+    if (i === 0) {
+      s._rank = 1;
+    } else {
+      const prev = scores[i - 1];
+      if (s.total > 0 && s.total === prev.total) {
+        s._rank = prev._rank; // même rang si égalité et score > 0
+      } else {
+        s._rank = i + 1; // rang réel basé sur la position
+      }
+    }
+  });
+
+  scores.forEach((s, i) => {
+    const rank = s._rank;
+    // Style visuel : on colore les 3 premières positions distinctes
+    const topRanks = [...new Set(scores.filter(x => x.total > 0).map(x => x._rank))].slice(0, 3);
+    const visualRank = topRanks.indexOf(rank); // 0, 1, 2 ou -1
+    const rankClass = visualRank >= 0 ? `rank-${visualRank + 1}` : '';
+
+    let rankLabel;
+    if (s.total === 0) {
+      rankLabel = `<span style="font-size:12px">${i + 1}</span>`;
+    } else if (visualRank >= 0 && rank <= 3) {
+      rankLabel = `<span style="font-style:italic;font-size:11px">${rankIcons[rank - 1] || rank}</span>`;
+    } else {
+      rankLabel = `<span style="font-size:12px">${rank}</span>`;
+    }
 
     let detailHtml = '<div class="lb-detail"><div style="display:grid;grid-template-columns:1fr 1fr;gap:0 28px">';
     DUNGEONS_ORDER.forEach(d => {
@@ -784,7 +811,7 @@ function renderLeaderboard(scores) {
         <div class="hf-list">`;
       dHFs.forEach(a => {
         const done = s.done.has(a.id);
-        const title = (currentLang === 'en' && TRANSLATIONS[a.title]?.en) ? TRANSLATIONS[a.title].en : a.title;
+        const title = (currentLang === 'en' && a.title_en) ? a.title_en : a.title;
         detailHtml += `<div class="hf-item ${done ? 'done' : ''}">
           <div class="hf-check-icon">${done ? '✓' : ''}</div>
           <span class="hf-item-name">${title}</span>
@@ -993,7 +1020,7 @@ const TRANSLATIONS = {
   'rules.hf.2':      { fr: "Les logos de condition (portail interdit, dispell interdit, poulet interdit…) indiquent les reliques ou capacités bannies pour ce haut-fait.", en: 'Condition icons (portal forbidden, dispell forbidden, chicken forbidden…) indicate the relics or abilities banned for that achievement.' },
   'rules.valid.1':   { fr: "Pas de logs obligatoires pendant la complétion. Jouez le jeu honnêtement, c'est tout ce qu'on demande.", en: "No logs required during completion. Play honestly. That's all we ask." },
   'rules.valid.2':   { fr: "Les hauts-faits sont liés au compte. Pour les valider, envoyez un MP à Pouf ou postez un message sur le Discord avec le nom des challenges accomplis. Le score sera mis à jour en conséquence.", en: 'Achievement are bind to account. To validate them, send a DM to Pouf or post a message on Discord with the completed challenge names. The score will be updated accordingly.' },
-  'rules.dungeon.1': { fr: 'Les donjons sont à faire uniquement entre Eternal 5 & Eternal 8.', en: 'Dungeons must be completed between Eternal 5 & Eternal 8 only.' },
+  'rules.dungeon.1': { fr: 'Les donjons sont à faire uniquement entre Eternal 5 & Eternal 9.', en: 'Dungeons must be completed between Eternal 5 & Eternal 9 only.' },
   'header.subtitle':   { fr: 'Du 21/04 au 17/05 · Classement en direct', en: 'Apr 21 – May 17 · Live rankings' },
   'header.organiser':  { fr: 'Organisé par Pouf', en: 'Hosted by Pouf' },
   'lb.col.player':     { fr: 'Joueur',  en: 'Player' },
