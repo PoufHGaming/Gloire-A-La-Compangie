@@ -11,14 +11,15 @@
   :root {
     --gold: #c9a84c;
     --gold-light: #e8c96a;
-    --gold-dim: #7a6030;
+    --gold-dim: #9a7a3a;
     --bg: #0a0a0e;
     --bg2: #12121a;
     --bg3: #1c1c28;
     --border: rgba(201,168,76,0.2);
     --border-bright: rgba(201,168,76,0.5);
     --text: #e8e0d0;
-    --text-dim: #8a8070;
+    --text-dim: #b0a898;
+    --text-muted: #706860;
     --red: #c94c4c;
     --teal: #4ca8a8;
     --purple: #9b7fea;
@@ -56,11 +57,12 @@
   }
   .event-subtitle {
     font-size: 15px;
-    color: var(--text-dim);
+    color: var(--text);
     margin-top: 6px;
     letter-spacing: 0.15em;
     text-transform: uppercase;
     font-weight: 300;
+    opacity: 0.65;
   }
   .social-links {
     display: flex;
@@ -77,13 +79,13 @@
     border: 1px solid var(--border);
     border-radius: 4px;
     text-decoration: none;
-    color: var(--text-dim);
+    color: var(--text);
     font-size: 12px;
     font-family: 'Cinzel', serif;
     letter-spacing: 0.08em;
     transition: all 0.2s;
   }
-  .social-link:hover { color: var(--text); }
+  .social-link:hover { color: var(--text); border-color: var(--border-bright); }
   .social-link.twitch:hover { border-color: #9147ff; color: #9147ff; }
   .social-link.discord:hover { border-color: #5865f2; color: #5865f2; }
   .social-icon { width: 15px; height: 15px; flex-shrink: 0; }
@@ -104,12 +106,13 @@
     padding: 8px 20px;
     background: none;
     border: 1px solid transparent;
-    color: var(--text-dim);
+    color: var(--text);
     cursor: pointer;
     transition: all 0.2s;
+    opacity: 0.6;
   }
-  .tab:hover { color: var(--text); border-color: var(--border); }
-  .tab.active { color: var(--gold); border-color: var(--border-bright); background: rgba(201,168,76,0.05); }
+  .tab:hover { opacity: 1; border-color: var(--border); }
+  .tab.active { color: var(--gold); border-color: var(--border-bright); background: rgba(201,168,76,0.05); opacity: 1; }
 
   /* MAIN */
   main { max-width: 960px; margin: 0 auto; padding: 32px 24px 64px; }
@@ -545,9 +548,9 @@
   <button class="tab" id="tab-rules" onclick="showPage('rules', this)">Règles</button>
 <div style="margin-left:auto; display:flex; align-items:center; gap:10px; position:relative;">
 
-  <button class="tab" id="lang-btn" onclick="toggleLang()" style="opacity:0.6">FR</button>
+  <button class="tab" id="lang-btn" onclick="toggleLang()" style="">FR</button>
 
-<button class="tab" id="help-btn" onclick="toggleHelpMenu()" style="opacity:0.6"></button>
+<button class="tab" id="help-btn" onclick="toggleHelpMenu()" style=""></button>
 
   <div id="help-menu" style="
     display:none;
@@ -637,7 +640,7 @@ const ACHIEVEMENTS = [
   {id:35,dungeon:"La chute Cithrel",      title:"Disco",                                title_en:"Disco",                             desc:"Le groupe doit amener la MÊME orbe dans TOUTES les zones des boss.",                                                                                                                                                                                                                                                                                                           desc_en:"The group must bring the SAME orb into ALL of the boss's zones.",                                                                                                                                                                                                    points:10, hard:false, personal:false, conditions:[]},
   {id:36,dungeon:"La chute Cithrel",      title:"Zéro Absolu",                          title_en:"Absolute Zero",                     desc:"Le joueur doit obtenir 20 stacks de givre (Vous pouvez mourir après).",                                                                                                                                                                                                                                                                                                                                 desc_en:"The player must obtain 20 stacks of frost (You can die from it).",                                                                                                                                                                                                                        points:20, hard:true,  personal:true,  conditions:[]},
   {id:37,dungeon:"Marché d'Urrak",        title:"La Paire",                             title_en:"The Dual",                          desc:"Le groupe doit faire monter un boss à 40 stacks minimum, avant de le tuer.",                                                                                                                                                                                                                                                                                                   desc_en:"The group must have a boss reach 40 stacks minimum before killing it.",                                                                                                                                                                                             points:10, hard:false, personal:false, conditions:[]},
-  {id:38,dungeon:"Marché d'Urrak",        title:"POUR LA FAMILLE",                      title_en:"For the Family",                    desc:"Le groupe doit libérer tous les villageois sans dépasser 100% d'accomplissement (8 Piliers) Avant la fin du Timer",                                                                                                                                                                                                                                                                                 desc_en:"The group must free all villagers without exceeding 100% completion (8 Pillagers) Before the Timer ends (Overtime)",                                                                                                                                                                                points:10, hard:false, personal:false, conditions:[]},
+  {id:38,dungeon:"Marché d'Urrak",        title:"POUR LA FAMILLE",                      title_en:"For the Family",                    desc:"Le groupe doit libérer tous les villageois sans dépasser 100% d'accomplissement (8 Piliers) Avant la fin du timer",                                                                                                                                                                                                                                                                                 desc_en:"The group must free all villagers without exceeding 100% completion (8 Pillagers) Before the timer ends",                                                                                                                                                                                points:10, hard:false, personal:false, conditions:[]},
   {id:39,dungeon:"Marché d'Urrak",        title:"La Maire",                             title_en:"The Duel",                          desc:"Le groupe doit faire monter un boss à 80 stacks minimum, avant de le tuer.",                                                                                                                                                                                                                                                                                                   desc_en:"The group must have a boss reach 80 stacks minimum before killing it.",                                                                                                                                                                                             points:20, hard:true,  personal:false, conditions:[]},
   {id:40,dungeon:"Sables Empyréens",      title:"Comme un pro",                         title_en:"Like a Pro",                        desc:"Le joueur ne doit se prendre aucun dégât de : \"Jugement de Sinnari\" (rayon horizonta & vertical), \"Explosion céleste\" (petite zone au sol), \"Pénombre\" (aoe violette) pendant le combat contre Sin Magir.",                                                                                                                                                                desc_en:"The player must not take any damage from \"Judgment of Sinnari\" (horizontal & vertical beams), \"Celestial Explosion\" (small ground AoE), or \"Umbral Shadow\" (purple AoE) during the fight against Sin Magir.",                                                                                                                                                    points:10, hard:false, personal:true,  conditions:[]},
   {id:41,dungeon:"Sables Empyréens",      title:"Sneaky",                               title_en:"Sneaky",                            desc:"Le groupe doit accomplir le donjon sans aggro une seule patrouille (Reliques Skip & Portail interdit).",                                                                                                                                                                                                                                                                       desc_en:"The group must complete the dungeon without aggroing a single patrol.",                                                                                                                                                                                             points:10, hard:false, personal:false, conditions:['portal','shadow']},
