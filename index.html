@@ -459,6 +459,74 @@
   .rules-conditions { display: flex; gap: 5px; flex-shrink: 0; margin-top: 3px; }
   .rules-conditions img { width: 18px; height: 18px; object-fit: contain; opacity: 0.8; }
 
+  /* SECRET HF */
+  .secret-section {
+    margin-top: 40px;
+    margin-bottom: 28px;
+  }
+  .secret-title {
+    font-family: 'Cinzel', serif;
+    font-size: 12px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: #b8a0f0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(155,127,234,0.25);
+    margin-bottom: 14px;
+  }
+  .secret-card {
+    background: rgba(155,127,234,0.08);
+    border: 1px solid rgba(155,127,234,0.4);
+    border-radius: 4px;
+    padding: 16px 18px;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .secret-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 8px,
+      rgba(155,127,234,0.025) 8px,
+      rgba(155,127,234,0.025) 16px
+    );
+    pointer-events: none;
+  }
+  .secret-card:hover { border-color: rgba(155,127,234,0.45); background: rgba(155,127,234,0.07); }
+  .secret-card-header { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+  .secret-card-title {
+    font-size: 15px;
+    color: #b8a0f0;
+    font-style: italic;
+    letter-spacing: 0.05em;
+  }
+  .secret-card-title::after { content: ' \25B8'; font-size: 10px; opacity: 0.4; }
+  .secret-card.open .secret-card-title::after { content: ' \25BE'; }
+  .secret-card-desc {
+    display: none;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(155,127,234,0.15);
+    color: #a090d8;
+    font-size: 14px;
+    line-height: 1.7;
+    font-style: italic;
+    letter-spacing: 0.03em;
+  }
+  .secret-card.open .secret-card-desc { display: block; }
+  .secret-coming-soon {
+    color: #a090d8;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-size: 12px;
+    font-family: 'Cinzel', serif;
+  }
+
   /* LOADING */
   .loading { text-align: center; padding: 48px; color: var(--text-dim); font-style: italic; }
 
@@ -875,6 +943,19 @@ function renderAchievements() {
     });
     html += `</div></div></div>`;
   });
+  // HF SECRET
+  html += `<div class="secret-section">
+    <div class="secret-title">${t('secret.section')}</div>
+    <div class="secret-card" onclick="this.classList.toggle('open')">
+      <div class="secret-card-header">
+        <span class="secret-card-title">${t('secret.title')}</span>
+      </div>
+      <div class="secret-card-desc">
+        <span class="secret-coming-soon">${t('secret.coming')}</span>
+      </div>
+    </div>
+  </div>`;
+
   document.getElementById('ach-content').innerHTML = html;
 }
 
@@ -1028,6 +1109,10 @@ const TRANSLATIONS = {
   'lb.col.total':      { fr: 'Total',   en: 'Total' },
   'hf.bonus_tag':      { fr: '+5 pts si complet', en: '+5 pts if complete' },
   'hf.pts_max':        { fr: 'pts max', en: 'pts max' },
+  'secret.section':    { fr: '✦ Haut-fait secret ✦', en: '✦ Secret Achievement ✦' },
+  'secret.title':      { fr: '— ? —', en: '— ? —' },
+  'secret.desc':       { fr: 'À venir…', en: 'Coming soon…' },
+  'secret.coming':     { fr: 'À venir…', en: 'Coming soon…' },
   'badge.hard':        { fr: 'Difficile', en: 'Hard' },
   'badge.solo':        { fr: 'Solo',     en: 'Solo' },
   'badge.group':       { fr: 'Groupe',   en: 'Group' },
